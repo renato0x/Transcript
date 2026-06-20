@@ -6,7 +6,7 @@
 #define MyAppVersion "1.0.0"
 #endif
 #define MyAppPublisher "renato0x"
-#define MyAppURL "https://github.com/renato0x/transcript"
+#define MyAppURL "https://github.com/renato0x/Transcript"
 
 [Setup]
 AppId={{F4A7B3C2-8D5E-4F1A-9B6C-3E2D5A8F7B1C}
