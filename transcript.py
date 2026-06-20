@@ -71,7 +71,7 @@ class HotkeyManager(QObject):
     def __init__(self, window):
         super().__init__(window)
         cfg_ = cfg.load()
-        hotkey = cfg_.get("hotkey", "ctrl+alt+r")
+        hotkey = cfg_.get("hotkey", "ctrl+alt+z")
         mod, vk = _parse_hotkey_vk(hotkey)
 
         self._filter = _Win32HotkeyFilter(self.press.emit)

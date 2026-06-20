@@ -1,11 +1,12 @@
 import ctypes
+import os
 import webbrowser
 
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QMenu, QApplication, QPushButton,
     QMessageBox,
 )
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import Qt, QTimer, QDateTime
 from PySide6.QtGui import QPainter, QPainterPath, QColor, QPen, QAction
 
 from .waveform_widget import WaveformWidget
@@ -284,7 +285,7 @@ class FloatingWindow(QWidget):
         if self.mute_widget.is_muted():
             return
         mode = self.mode
-        if mode == "toggle":
+        if mode in ("toggle", "ideas"):
             self._on_toggle()
         elif mode == "push":
             self._on_push_start()
@@ -302,7 +303,7 @@ class FloatingWindow(QWidget):
     def _on_push_start(self):
         if self._transcribing or self._recording:
             return
-        hotkey = self._config.get("hotkey", "ctrl+alt+r")
+        hotkey = self._config.get("hotkey", "ctrl+shift+z")
         self._push_vk_codes = _parse_hotkey(hotkey)
         self._start_recording()
         self._push_timer.start(32)
@@ -381,13 +382,62 @@ class FloatingWindow(QWidget):
         self.indicator.set_state("idle")
         self.waveform.set_transcribing(False)
         if text:
+            output = text
+            if self.mode == "ideas":
+                output = self._format_as_idea(text)
+                self._save_idea(text)
             clipboard = QApplication.clipboard()
-            clipboard.setText(text)
+            clipboard.setText(output)
             if self._config.get("auto_paste", True):
                 auto_paste()
             self._flash_border()
         try:
             sounds.transcribed()
+        except Exception:
+            pass
+
+    def _format_as_idea(self, raw_text):
+        lines = raw_text.strip().split("\n")
+        first_line = lines[0][:60] if lines else "Ideia"
+        timestamp = QDateTime.currentDateTime().toString("yyyy-MM-dd HH:mm")
+        date_str = QDateTime.currentDateTime().toString("yyyy-MM-dd")
+        title = first_line.rstrip(".,:;!?").strip()
+        body = "\n".join(lines[1:]).strip() if len(lines) > 1 else ""
+        parts = [
+            "---",
+            f"tipo: ideia",
+            f"data: {date_str}",
+            "tags: [ideia, voz]",
+            "---",
+            "",
+            f"# {title}",
+            "",
+            f"**Capturado em:** {timestamp}",
+            "",
+        ]
+        if body:
+            parts.append(body)
+            parts.append("")
+        parts.extend([
+            "---",
+            "",
+            "_Transcrito via Transcript_",
+        ])
+        return "\n".join(parts)
+
+    def _save_idea(self, raw_text):
+        try:
+            output_dir = self._config.get("ideas_output_dir", "")
+            if not output_dir:
+                app_dir = os.path.dirname(os.path.abspath(__file__))
+                output_dir = os.path.join(app_dir, "Ideias")
+            os.makedirs(output_dir, exist_ok=True)
+            timestamp = QDateTime.currentDateTime().toString("yyyyMMdd-HHmmss")
+            filename = f"Ideia_{timestamp}.md"
+            filepath = os.path.join(output_dir, filename)
+            content = self._format_as_idea(raw_text)
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(content)
         except Exception:
             pass
 

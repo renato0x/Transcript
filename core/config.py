@@ -6,12 +6,13 @@ CONFIG_DIR = os.path.join(APPDATA, "Transcript")
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 
 DEFAULT_CONFIG = {
-    "hotkey": "ctrl+alt+r",
+    "hotkey": "ctrl+alt+z",
     "language": "pt",
     "auto_paste": True,
     "mode": "toggle",
     "model_size": "small",
     "vad_silence_ms": 1000,
+    "ideas_output_dir": "",
 }
 
 

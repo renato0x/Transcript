@@ -10,7 +10,7 @@ Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) running locally
 - **Three input modes**: Toggle, Push-to-talk, Voice Activity Detection
 - **CPU-only**: Runs entirely on your machine using int8 quantized Whisper
 - **Auto-copy & auto-paste**: Transcriptions are copied to clipboard and pasted automatically
-- **Global hotkey**: Ctrl+Alt+R — works from any application
+- **Global hotkey**: Ctrl+Alt+Z — works from any application
 - **Always-on-top**: Frameless black floating window, 270×85 px
 - **Minimal UX**: No tray icon, no menu bar — just a lightweight overlay
 - **Offline**: No data leaves your computer
@@ -19,7 +19,7 @@ Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) running locally
 
 1. Download the latest installer from [Releases](https://github.com/renato0x/Transcript/releases)
 2. Run `Transcript_v1.0.0_Setup.exe` (no admin rights required)
-3. Press **Ctrl+Alt+R** to start transcribing
+3. Press **Ctrl+Alt+Z** to start transcribing
 4. Speak — release to paste the transcription
 
 The model (~500 MB) is downloaded on first use to `%USERPROFILE%\.cache\faster_whisper\`.
@@ -29,7 +29,7 @@ The model (~500 MB) is downloaded on first use to `%USERPROFILE%\.cache\faster_w
 | Mode | Behaviour |
 |------|-----------|
 | **Toggle** | Click to start recording, click to stop |
-| **Push-to-talk** | Hold Ctrl+Alt+R while speaking, release to transcribe |
+| **Push-to-talk** | Hold Ctrl+Alt+Z while speaking, release to transcribe |
 | **VAD** | Starts recording automatically when speech is detected, stops after silence |
 
 Click the mode indicator (bottom-left) to cycle between modes.
