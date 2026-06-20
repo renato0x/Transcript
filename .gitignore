@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.egg
+.venv/
+venv/
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# Generated assets
+*.bmp
+*.ico
+
+# Installer
+Transcript_*_Setup.exe
+
+# User config
+config.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vs/
+.vscode/
+.idea/

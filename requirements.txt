@@ -1,0 +1,6 @@
+PySide6>=6.5.0
+faster-whisper>=1.0.0
+sounddevice>=0.4.6
+numpy>=1.24.0
+plyer>=2.1.0
+webrtcvad>=2.0.10
