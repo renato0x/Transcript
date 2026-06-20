@@ -127,6 +127,108 @@ def _make_ico(sizes_data):
     return bytes(header) + bytes(dir_entries) + bytes(image_data)
 
 
+def _draw_bars(w, h, pixels, bar_count, bar_width, bar_gap, color, bright):
+    cx = w // 2
+    cy = h // 2
+    area_width = bar_count * bar_width + (bar_count - 1) * bar_gap
+    start_x = cx - area_width // 2
+    max_height = h * 0.45
+    min_height = h * 0.12
+
+    for i in range(bar_count):
+        t = (i + 0.5) / bar_count
+        height = int(min_height + max_height * (0.3 + 0.7 * math.sin(t * math.pi)))
+        c = bright if i in (0, bar_count - 1) else color
+        bar_x = start_x + i * (bar_width + bar_gap)
+        for by in range(cy - height // 2, cy + height // 2 + 1):
+            for bx in range(bar_x, bar_x + bar_width):
+                _set_px(pixels, w, h, bx, by, c)
+
+
+def _set_px(pixels, w, h, px, py, color):
+    if 0 <= px < w and 0 <= py < h:
+        idx = (py * w + px) * 4
+        pixels[idx] = color[0]
+        pixels[idx + 1] = color[1]
+        pixels[idx + 2] = color[2]
+        pixels[idx + 3] = color[3]
+
+
+def _fill_rect(pixels, w, h, x, y, rw, rh, color):
+    for dy in range(rh):
+        for dx in range(rw):
+            _set_px(pixels, w, h, x + dx, y + dy, color)
+
+
+def _draw_logo(w, h):
+    pixels = bytearray(w * h * 4)
+
+    bg = (10, 10, 10, 255)
+    border = (40, 40, 40, 255)
+    bar_color = (140, 140, 140, 255)
+    bar_bright = (180, 180, 180, 255)
+
+    margin = max(2, w // 30)
+    radius = max(4, w // 16)
+
+    def _is_inside_rounded(x, y, rad):
+        x -= margin
+        y -= margin
+        size = w - 2 * margin
+        if x < 0 or y < 0 or x >= size or y >= size:
+            return False
+        if x < rad and y < rad:
+            return (x - rad) ** 2 + (y - rad) ** 2 <= rad ** 2
+        if x < rad and y >= size - rad:
+            return (x - rad) ** 2 + (y - (size - rad)) ** 2 <= rad ** 2
+        if x >= size - rad and y < rad:
+            return (x - (size - rad)) ** 2 + (y - rad) ** 2 <= rad ** 2
+        if x >= size - rad and y >= size - rad:
+            return (x - (size - rad)) ** 2 + (y - (size - rad)) ** 2 <= rad ** 2
+        return True
+
+    def _is_border(x, y, rad):
+        if not _is_inside_rounded(x, y, rad + 1):
+            return False
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                if not _is_inside_rounded(x + dx, y + dy, rad):
+                    return True
+        return False
+
+    for y in range(h):
+        for x in range(w):
+            inside = _is_inside_rounded(x, y, radius)
+            on_border = _is_border(x, y, radius)
+            if on_border:
+                _set_px(pixels, w, h, x, y, border)
+            elif inside:
+                _set_px(pixels, w, h, x, y, bg)
+
+    bar_count = 5
+    bar_width = max(1, w // 40)
+    bar_gap = max(2, w // 30)
+    _draw_bars(w, h, pixels, bar_count, bar_width, bar_gap, bar_color, bar_bright)
+
+    return pixels
+
+
+def _draw_banner(w, h):
+    pixels = bytearray(w * h * 4)
+    bg = (10, 10, 10, 255)
+    bar_color = (140, 140, 140, 255)
+    bar_bright = (180, 180, 180, 255)
+
+    _fill_rect(pixels, w, h, 0, 0, w, h, bg)
+
+    bar_count = 7
+    bar_width = max(1, w // 30)
+    bar_gap = max(3, w // 20)
+    _draw_bars(w, h, pixels, bar_count, bar_width, bar_gap, bar_color, bar_bright)
+
+    return pixels
+
+
 def main():
     out_dir = os.path.dirname(os.path.abspath(__file__))
     sizes_data = []
@@ -147,6 +249,20 @@ def main():
     with open(ico_path, "wb") as f:
         f.write(ico_data)
     print(f"logo.ico ({len(sizes_data)} sizes)")
+
+    banner_px = _draw_banner(164, 314)
+    banner_bmp = _make_bmp(164, 314, banner_px)
+    banner_path = os.path.join(out_dir, "banner.bmp")
+    with open(banner_path, "wb") as f:
+        f.write(banner_bmp)
+    print(f"banner.bmp (164x314)")
+
+    small_px = _draw_logo(55, 55)
+    small_bmp = _make_bmp(55, 55, small_px)
+    small_path = os.path.join(out_dir, "small.bmp")
+    with open(small_path, "wb") as f:
+        f.write(small_bmp)
+    print(f"small.bmp (55x55)")
 
 
 if __name__ == "__main__":

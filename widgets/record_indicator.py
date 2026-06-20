@@ -15,11 +15,16 @@ class RecordIndicator(QWidget):
         self._timer.start(50)
         self.setFixedSize(20, 20)
 
+    _ACTIVE = frozenset(["recording", "transcribing", "loading"])
+
     def set_state(self, state):
+        was_active = self._state in self._ACTIVE
+        now_active = state in self._ACTIVE
         self._state = state
-        self._size = 3.5
-        self._glow = 5.0
-        self._direction = 1
+        if not (was_active and now_active):
+            self._size = 3.5
+            self._glow = 5.0
+            self._direction = 1
         self.update()
 
     def _tick(self):

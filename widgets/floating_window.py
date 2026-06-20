@@ -16,7 +16,6 @@ from core.audio_recorder import AudioRecorder
 from core.transcriber import Transcriber
 from core.vad import VAD
 from core import config as cfg
-from notifier import show_notification
 from autopaste import auto_paste
 from version import VERSION
 import sounds
@@ -387,11 +386,6 @@ class FloatingWindow(QWidget):
             if self._config.get("auto_paste", True):
                 auto_paste()
             self._flash_border()
-            show_notification(
-                "Transcript", "Transcription copied"
-            )
-        else:
-            show_notification("Transcript", "No speech detected")
         try:
             sounds.transcribed()
         except Exception:
@@ -406,9 +400,6 @@ class FloatingWindow(QWidget):
         self.mode_indicator.set_blocked(False)
         self.indicator.set_state("idle")
         self.waveform.set_transcribing(False)
-        show_notification(
-            "Transcript", f"Transcription failed"
-        )
         try:
             sounds.error()
         except Exception:
