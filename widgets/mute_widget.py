@@ -10,7 +10,7 @@ class MuteWidget(QWidget):
         super().__init__(parent)
         self._muted = False
         self._hovered = False
-        self.setFixedSize(20, 20)
+        self.setFixedSize(16, 16)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setMouseTracking(True)
 
@@ -52,35 +52,32 @@ class MuteWidget(QWidget):
         cy = self.height() / 2.0
 
         if self._muted:
-            body_color = QColor(80, 70, 70)
-            arc_color = QColor(80, 60, 60)
-            cross_color = QColor(200, 80, 80)
+            body_color = QColor(60, 58, 58)
+            cross_color = QColor(160, 70, 70)
         else:
-            body_color = QColor(160, 160, 160)
-            arc_color = QColor(120, 120, 120)
-            cross_color = QColor(0, 0, 0)
+            body_color = QColor(80, 80, 80)
+            arc_color = QColor(80, 80, 80)
 
         painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(body_color)
 
-        speaker_body = [QPointF(cx - 5, cy - 3), QPointF(cx - 1, cy - 3),
-                        QPointF(cx + 3, cy - 6), QPointF(cx + 3, cy + 6),
-                        QPointF(cx - 1, cy + 3), QPointF(cx - 5, cy + 3)]
+        speaker_body = [QPointF(cx - 4, cy - 2), QPointF(cx - 1, cy - 2),
+                        QPointF(cx + 2, cy - 5), QPointF(cx + 2, cy + 5),
+                        QPointF(cx - 1, cy + 2), QPointF(cx - 4, cy + 2)]
         painter.drawPolygon(speaker_body)
 
-        painter.setPen(QPen(arc_color, 1.5))
-        painter.setBrush(Qt.BrushStyle.NoBrush)
-
         if not self._muted:
-            painter.drawArc(int(cx + 4), int(cy - 7), 6, 14, -45 * 16, 90 * 16)
-            painter.drawArc(int(cx + 7), int(cy - 7), 6, 14, -45 * 16, 90 * 16)
+            painter.setPen(QPen(arc_color, 1.2))
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.drawArc(int(cx + 3), int(cy - 5), 4, 10, -45 * 16, 90 * 16)
+            painter.drawArc(int(cx + 6), int(cy - 5), 4, 10, -45 * 16, 90 * 16)
 
         if self._muted:
-            painter.setPen(QPen(cross_color, 2))
-            painter.drawLine(int(cx + 4), int(cy - 5), int(cx + 8), int(cy + 5))
-            painter.drawLine(int(cx + 4), int(cy + 5), int(cx + 8), int(cy - 5))
+            painter.setPen(QPen(cross_color, 1.5))
+            painter.drawLine(int(cx + 3), int(cy - 4), int(cx + 7), int(cy + 4))
+            painter.drawLine(int(cx + 3), int(cy + 4), int(cx + 7), int(cy - 4))
 
         if self._hovered:
             painter.setPen(Qt.PenStyle.NoPen)
-            painter.setBrush(QColor(255, 255, 255, 12))
-            painter.drawRoundedRect(self.rect(), 3, 3)
+            painter.setBrush(QColor(255, 255, 255, 10))
+            painter.drawRoundedRect(self.rect(), 2, 2)
