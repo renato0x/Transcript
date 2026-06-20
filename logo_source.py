@@ -1,9 +1,3 @@
-"""Generate Transcript logo — minimalist wave in a dark square.
-Outputs: logo.bmp, logo.ico (multi-size)
-
-Usage: python logo_source.py
-"""
-
 import struct
 import math
 import os
@@ -12,11 +6,10 @@ SIZES = [256, 64, 48, 32, 16]
 
 
 def _make_bmp(w, h, pixels_4byte):
-    """Pack a 4-byte-per-pixel BGRA bytearray into a BMP + optional ICO data."""
     row_size = w * 4
-    padding = b"\x00" * 0  # 4-byte aligned already
+    padding = b"\x00" * 0
     raw = bytearray()
-    for y in range(h - 1, -1, -1):  # BMP is bottom-up
+    for y in range(h - 1, -1, -1):
         start = y * w * 4
         row = pixels_4byte[start : start + w * 4]
         raw.extend(row)
@@ -25,46 +18,43 @@ def _make_bmp(w, h, pixels_4byte):
     header_size = 40
     file_size = 14 + header_size + len(raw)
     bmp = bytearray()
-    # BITMAPFILEHEADER
     bmp.extend(b"BM")
     bmp.extend(struct.pack("<I", file_size))
     bmp.extend(b"\x00\x00")
     bmp.extend(b"\x00\x00")
     bmp.extend(struct.pack("<I", 14 + header_size))
-    # BITMAPINFOHEADER
     bmp.extend(struct.pack("<I", header_size))
     bmp.extend(struct.pack("<i", w))
     bmp.extend(struct.pack("<i", h))
     bmp.extend(struct.pack("<H", 1))
-    bmp.extend(struct.pack("<H", 32))  # 32-bit RGBA
-    bmp.extend(b"\x00\x00\x00\x00")  # no compression
+    bmp.extend(struct.pack("<H", 32))
+    bmp.extend(b"\x00\x00\x00\x00")
     bmp.extend(struct.pack("<I", len(raw)))
-    bmp.extend(b"\x00\x00\x00\x00" * 2)  # resolution
-    bmp.extend(b"\x00\x00\x00\x00")  # colors used
-    bmp.extend(b"\x00\x00\x00\x00")  # important colors
+    bmp.extend(b"\x00\x00\x00\x00" * 2)
+    bmp.extend(b"\x00\x00\x00\x00")
+    bmp.extend(b"\x00\x00\x00\x00")
     bmp.extend(raw)
     return bmp
 
 
 def _draw_logo(w, h):
-    """Return BGRA bytearray of the logo at given size."""
     pixels = bytearray(w * h * 4)
 
-    bg = (10, 10, 10, 255)       # #0a0a0a
-    border = (30, 30, 30, 255)    # #1e1e1e
-    wave_color = (136, 136, 136, 255)  # #888888
-    dot_color = (170, 170, 170, 255)    # #aaaaaa
+    bg = (10, 10, 10, 255)
+    border = (40, 40, 40, 255)
+    bar_color = (140, 140, 140, 255)
+    bar_bright = (180, 180, 180, 255)
 
-    margin = max(2, w // 40)
-    radius = max(4, w // 20)
+    margin = max(2, w // 30)
+    radius = max(4, w // 16)
 
     def _set(px, py, color):
         if 0 <= px < w and 0 <= py < h:
             idx = (py * w + px) * 4
-            pixels[idx] = color[0]      # B
-            pixels[idx + 1] = color[1]  # G
-            pixels[idx + 2] = color[2]  # R
-            pixels[idx + 3] = color[3]  # A
+            pixels[idx] = color[0]
+            pixels[idx + 1] = color[1]
+            pixels[idx + 2] = color[2]
+            pixels[idx + 3] = color[3]
 
     def _is_inside_rounded(x, y, rad):
         x -= margin
@@ -85,14 +75,12 @@ def _draw_logo(w, h):
     def _is_border(x, y, rad):
         if not _is_inside_rounded(x, y, rad + 1):
             return False
-        # Check if it's within 1px of the outer edge
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
                 if not _is_inside_rounded(x + dx, y + dy, rad):
                     return True
         return False
 
-    # Draw background + border
     for y in range(h):
         for x in range(w):
             inside = _is_inside_rounded(x, y, radius)
@@ -102,44 +90,35 @@ def _draw_logo(w, h):
             elif inside:
                 _set(x, y, bg)
 
-    # Draw wave (sine curve)
     cx = w // 2
     cy = h // 2
-    wave_amp = h * 0.18
-    wave_freq = 2.5 * math.pi / (w - 2 * margin)
-    wave_half = max(1, w // 180)
-    dot_radius = max(2, w // 50)
-    dot_start_x = margin + (w - 2 * margin) * 0.12
-    wave_start_x = dot_start_x + dot_radius + 2
+    bar_count = 5
+    bar_width = max(1, w // 40)
+    bar_gap = max(2, w // 30)
+    bar_area_width = bar_count * bar_width + (bar_count - 1) * bar_gap
+    start_x = cx - bar_area_width // 2
+    max_height = h * 0.45
+    min_height = h * 0.12
 
-    for x in range(int(wave_start_x), w - margin):
-        t = (x - margin) / (w - 2 * margin)
-        y_offset = int(cy + wave_amp * math.sin(t * wave_freq * (w - 2 * margin)))
-        for dy in range(-wave_half, wave_half + 1):
-            _set(x, y_offset + dy, wave_color)
-
-    # Draw dot at start
-    dot_start_y = cy
-    for dy in range(-dot_radius, dot_radius + 1):
-        for dx in range(-dot_radius, dot_radius + 1):
-            if dx * dx + dy * dy <= dot_radius * dot_radius:
-                _set(int(dot_start_x + dx), dot_start_y + dy, dot_color)
+    for i in range(bar_count):
+        t = (i + 0.5) / bar_count
+        height = int(min_height + max_height * (0.3 + 0.7 * math.sin(t * math.pi)))
+        color = bar_bright if i in (0, bar_count - 1) else bar_color
+        bar_x = start_x + i * (bar_width + bar_gap)
+        for by in range(cy - height // 2, cy + height // 2 + 1):
+            for bx in range(bar_x, bar_x + bar_width):
+                _set(bx, by, color)
 
     return pixels
 
 
 def _make_ico(sizes_data):
-    """Pack multiple BMPs into a single .ico file."""
     count = len(sizes_data)
     header = struct.pack("<HHH", 0, 1, count)
     dir_entries = bytearray()
     image_data = bytearray()
-    offsets = []
     for (w, h), bmp_data in sizes_data:
-        # BMP data without file header (starting from BITMAPINFOHEADER)
-        # bmp_data includes file header, so we strip first 14 bytes
         raw = bmp_data[14:]
-        offsets.append(14 + count * 16 + len(image_data))
         ico_w = 0 if w >= 256 else w
         ico_h = 0 if h >= 256 else h
         dir_entries.extend(struct.pack("<BBBBHHII", ico_w, ico_h, 0, 0, 1, 32, len(raw), 0))

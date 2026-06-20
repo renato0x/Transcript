@@ -11,6 +11,7 @@ from PySide6.QtGui import QPainter, QPainterPath, QColor, QPen, QAction
 from .waveform_widget import WaveformWidget
 from .record_indicator import RecordIndicator
 from .mode_indicator import ModeIndicator, MODES
+from .mute_widget import MuteWidget
 from core.audio_recorder import AudioRecorder
 from core.transcriber import Transcriber
 from core.vad import VAD
@@ -56,6 +57,9 @@ class FloatingWindow(QWidget):
         self._update_url = ""
 
         self.indicator = RecordIndicator()
+        self.mute_widget = MuteWidget()
+        self.mute_widget.set_muted(self._config.get("muted", False))
+        self.mute_widget.muted_changed.connect(self._on_muted_changed)
         self.mode_indicator = ModeIndicator()
         self.mode_indicator.set_mode(self._config.get("mode", "toggle"))
         self.mode_indicator.mode_changed.connect(self._on_mode_changed)
@@ -86,6 +90,7 @@ class FloatingWindow(QWidget):
         left_vbox.setContentsMargins(0, 0, 0, 0)
         left_vbox.setSpacing(2)
         left_vbox.addStretch()
+        left_vbox.addWidget(self.mute_widget, 0, Qt.AlignmentFlag.AlignCenter)
         left_vbox.addWidget(self.indicator)
         left_vbox.addWidget(self.mode_indicator)
         left_vbox.addStretch()
@@ -272,7 +277,13 @@ class FloatingWindow(QWidget):
         if msg.exec() == QMessageBox.StandardButton.Yes:
             webbrowser.open(url)
 
+    def _on_muted_changed(self, muted):
+        self._config["muted"] = muted
+        cfg.save(self._config)
+
     def _on_hotkey_press(self):
+        if self.mute_widget.is_muted():
+            return
         mode = self.mode
         if mode == "toggle":
             self._on_toggle()
