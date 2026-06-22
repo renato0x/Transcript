@@ -9,10 +9,11 @@ class Transcriber(QObject):
     loading = Signal()
     started = Signal()
 
-    def __init__(self, model_size="small", device="cpu"):
+    def __init__(self, model_size="small", device="cpu", compute_type="int8"):
         super().__init__()
         self.model_size = model_size
         self.device = device
+        self.compute_type = compute_type
         self._model = None
         self._busy = False
 
@@ -38,7 +39,7 @@ class Transcriber(QObject):
                     self._model = WhisperModel(
                         self.model_size,
                         device=self.device,
-                        compute_type="int8",
+                        compute_type=self.compute_type,
                     )
                 self.started.emit()
                 segments, _ = self._model.transcribe(audio, beam_size=5, language="pt")
