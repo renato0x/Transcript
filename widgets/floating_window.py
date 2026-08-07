@@ -60,6 +60,8 @@ class FloatingWindow(QWidget):
         self.mute_widget = MuteWidget()
         self.mute_widget.set_muted(self._config.get("muted", False))
         self.mute_widget.muted_changed.connect(self._on_muted_changed)
+        self.mute_widget.setToolTip("Mute notification sounds")
+        sounds.set_muted(self._config.get("muted", False))
         self.mode_indicator = ModeIndicator()
         self.mode_indicator.set_mode(self._config.get("mode", "toggle"))
         self.mode_indicator.mode_changed.connect(self._on_mode_changed)
@@ -82,6 +84,7 @@ class FloatingWindow(QWidget):
             }
         """)
         self.close_btn.clicked.connect(QApplication.instance().quit)
+        self.close_btn.setToolTip("Close Transcripty")
 
         container = QWidget(self)
         container.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -280,10 +283,9 @@ class FloatingWindow(QWidget):
     def _on_muted_changed(self, muted):
         self._config["muted"] = muted
         cfg.save(self._config)
+        sounds.set_muted(muted)
 
     def _on_hotkey_press(self):
-        if self.mute_widget.is_muted():
-            return
         mode = self.mode
         if mode == "toggle":
             self._on_toggle()

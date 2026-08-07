@@ -1,8 +1,17 @@
 import numpy as np
 import sounddevice as sd
 
+_muted = False
+
+
+def set_muted(muted):
+    global _muted
+    _muted = muted
+
 
 def _play(freq, duration, volume=0.15):
+    if _muted:
+        return
     sr = 22050
     t = np.linspace(0, duration, int(sr * duration), False)
     env = np.exp(-t * 10)
@@ -11,6 +20,8 @@ def _play(freq, duration, volume=0.15):
 
 
 def _play_chord(notes, note_duration, volume=0.12):
+    if _muted:
+        return
     sr = 22050
     gap = 0.04
     total_len = int(sr * (len(notes) * (note_duration + gap)))
