@@ -117,11 +117,13 @@ def _make_ico(sizes_data):
     header = struct.pack("<HHH", 0, 1, count)
     dir_entries = bytearray()
     image_data = bytearray()
+    offset = 6 + count * 16
     for (w, h), bmp_data in sizes_data:
         raw = bmp_data[14:]
         ico_w = 0 if w >= 256 else w
         ico_h = 0 if h >= 256 else h
-        dir_entries.extend(struct.pack("<BBBBHHII", ico_w, ico_h, 0, 0, 1, 32, len(raw), 0))
+        dir_entries.extend(struct.pack("<BBBBHHII", ico_w, ico_h, 0, 0, 1, 32, len(raw), offset))
+        offset += len(raw)
         image_data.extend(raw)
 
     return bytes(header) + bytes(dir_entries) + bytes(image_data)

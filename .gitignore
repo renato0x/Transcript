@@ -11,6 +11,7 @@ venv/
 dist/
 build/
 *.spec
+!Transcript.spec
 
 # Generated assets (committed: logo_source.py regenerates them)
 # *.bmp
