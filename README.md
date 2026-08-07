@@ -72,12 +72,13 @@ iscc setup.iss
 - [x] Three input modes (Toggle / Push-to-talk / VAD)
 - [x] Global hotkey with auto-paste
 - [x] Minimal floating window UI
+- [ ] Linux support (AppImage / Flatpak)
 - [ ] Multi-language support
 - [ ] GPU acceleration (CUDA / ROCm)
 - [ ] Custom hotkey configuration UI
 - [ ] Export formats (SRT, TXT)
 - [ ] System tray integration
-- [ ] Linux support (AppImage / Flatpak)
+
 
 ## Tech Stack
 
