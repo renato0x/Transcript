@@ -12,7 +12,6 @@ DEFAULT_CONFIG = {
     "mode": "toggle",
     "model_size": "small",
     "vad_silence_ms": 1000,
-    "ideas_output_dir": "",
 }
 
 
