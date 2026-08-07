@@ -47,14 +47,29 @@ echo.
 
 REM Step 4: Inno Setup
 echo [4/4] Running Inno Setup...
-iscc /DMyAppVersion="%VER%" setup.iss
-if %errorlevel% neq 0 (
-    echo ERROR: Inno Setup failed with code %errorlevel%
-    exit /b %errorlevel%
-)
+set "ISCC_EXE=iscc"
+where iscc >nul 2>nul
+if not errorlevel 1 goto :iscc_ready
+if exist "%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe" set "ISCC_EXE=%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe"
+if exist "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" set "ISCC_EXE=C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+if exist "C:\Program Files\Inno Setup 6\ISCC.exe" set "ISCC_EXE=C:\Program Files\Inno Setup 6\ISCC.exe"
+:iscc_ready
+if "%ISCC_EXE%"=="iscc" goto :no_iscc
+"%ISCC_EXE%" /DMyAppVersion="%VER%" setup.iss
+if %errorlevel% neq 0 goto :iscc_failed
 echo Done.
 echo.
+goto :success
 
+:no_iscc
+echo ERROR: Inno Setup compiler not found. Install from https://jrsoftware.org/isdl.php
+exit /b 1
+
+:iscc_failed
+echo ERROR: Inno Setup failed with code %errorlevel%
+exit /b %errorlevel%
+
+:success
 echo ============================================
 echo  SUCCESS: Transcript_v%VER%_Setup.exe
 echo ============================================
