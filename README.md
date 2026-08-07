@@ -18,7 +18,7 @@ Uses [faster-whisper](https://github.com/SYSTRAN/faster-whisper) running locally
 ## Quick Start
 
 1. Download the latest installer from [Releases](https://github.com/renato0x/Transcript/releases)
-2. Run `Transcript_v1.0.0_Setup.exe` (no admin rights required)
+2. Run `Transcript_v0.2_Setup.exe` (no admin rights required)
 3. Press **Ctrl+Alt+Z** to start transcribing
 4. Speak — release to paste the transcription
 

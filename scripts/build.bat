@@ -16,8 +16,18 @@ echo  Building Transcript %VER%
 echo ============================================
 echo.
 
-REM Step 1: Clean previous builds
-echo [1/3] Cleaning previous builds...
+REM Step 1: Generate logo assets
+echo [1/4] Generating logo assets...
+python logo_source.py
+if %errorlevel% neq 0 (
+    echo ERROR: Logo generation failed with code %errorlevel%
+    exit /b %errorlevel%
+)
+echo Done.
+echo.
+
+REM Step 2: Clean previous builds
+echo [2/4] Cleaning previous builds...
 if exist build rmdir /s /q build
 if exist "dist\Transcript" rmdir /s /q dist\Transcript
 if exist "Transcript_v%VER%_Setup.exe" del "Transcript_v%VER%_Setup.exe"
@@ -25,8 +35,8 @@ if exist "Transcript_v%VER%_Installer.exe" del "Transcript_v%VER%_Installer.exe"
 echo Done.
 echo.
 
-REM Step 2: PyInstaller
-echo [2/3] Running PyInstaller...
+REM Step 3: PyInstaller
+echo [3/4] Running PyInstaller...
 pyinstaller Transcript.spec
 if %errorlevel% neq 0 (
     echo ERROR: PyInstaller failed with code %errorlevel%
@@ -35,8 +45,8 @@ if %errorlevel% neq 0 (
 echo Done.
 echo.
 
-REM Step 3: Inno Setup
-echo [3/3] Running Inno Setup...
+REM Step 4: Inno Setup
+echo [4/4] Running Inno Setup...
 iscc /DMyAppVersion="%VER%" setup.iss
 if %errorlevel% neq 0 (
     echo ERROR: Inno Setup failed with code %errorlevel%

@@ -12,9 +12,9 @@ dist/
 build/
 *.spec
 
-# Generated assets
-*.bmp
-*.ico
+# Generated assets (committed: logo_source.py regenerates them)
+# *.bmp
+# *.ico
 
 # Installer
 Transcript_*_Setup.exe

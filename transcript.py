@@ -40,6 +40,18 @@ def _resource_path(rel_path):
     return os.path.join(base, rel_path)
 
 
+def _ensure_logo():
+    ico_path = _resource_path("logo.ico")
+    if os.path.exists(ico_path):
+        return ico_path
+    try:
+        import logo_source
+        logo_source.main()
+    except Exception:
+        pass
+    return ico_path if os.path.exists(ico_path) else None
+
+
 def _parse_hotkey_vk(hotkey_str):
     mod = 0
     vk = 0
@@ -127,8 +139,8 @@ def main():
     app.setApplicationVersion(VERSION)
     app.setOrganizationName("renato0x")
 
-    ico_path = _resource_path("logo.ico")
-    if os.path.exists(ico_path):
+    ico_path = _ensure_logo()
+    if ico_path:
         app.setWindowIcon(QIcon(ico_path))
 
     qss_path = _resource_path("style.qss")
