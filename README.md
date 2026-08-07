@@ -77,6 +77,7 @@ iscc setup.iss
 - [ ] Custom hotkey configuration UI
 - [ ] Export formats (SRT, TXT)
 - [ ] System tray integration
+- [ ] Linux support (AppImage / Flatpak)
 
 ## Tech Stack
 
