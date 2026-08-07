@@ -1,6 +1,6 @@
 <div align="center">
 
-# Transcript
+# Transcripty
 
 **Offline speech transcription for Windows.**
 
@@ -30,7 +30,7 @@ Fast, private, and completely local — no internet required after the first run
 ## Quick Start
 
 1. Download the installer from [Releases][release-url]
-2. Run `Transcript_v0.2_Setup.exe` — no admin rights required
+2. Run `Transcripty_v0.2_Setup.exe` — no admin rights required
 3. Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Z</kbd> and speak
 4. Release — transcription is pasted automatically
 
@@ -60,7 +60,7 @@ scripts\build.bat
 Or run each step manually:
 
 ```bash
-pyinstaller Transcript.spec
+pyinstaller Transcripty.spec
 iscc setup.iss
 ```
 

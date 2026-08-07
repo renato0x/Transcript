@@ -2,7 +2,7 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 
-LOG_DIR = os.path.join(os.environ.get("APPDATA", ""), "Transcript", "logs")
+LOG_DIR = os.path.join(os.environ.get("APPDATA", ""), "Transcripty", "logs")
 
 
 def setup_logger():
@@ -12,7 +12,7 @@ def setup_logger():
     handler = RotatingFileHandler(log_path, maxBytes=1_048_576, backupCount=3, encoding="utf-8")
     handler.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s"))
 
-    logger = logging.getLogger("Transcript")
+    logger = logging.getLogger("Transcripty")
     logger.setLevel(logging.INFO)
     logger.addHandler(handler)
 

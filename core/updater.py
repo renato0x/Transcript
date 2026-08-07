@@ -12,7 +12,7 @@ class UpdateChecker(QObject):
 
     def run(self):
         try:
-            req = urllib.request.Request(GITHUB_API, headers={"User-Agent": "Transcript"})
+            req = urllib.request.Request(GITHUB_API, headers={"User-Agent": "Transcripty"})
             with urllib.request.urlopen(req, timeout=10) as resp:
                 data = json.loads(resp.read())
                 latest = data.get("tag_name", "").lstrip("v")

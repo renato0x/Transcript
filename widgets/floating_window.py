@@ -255,8 +255,8 @@ class FloatingWindow(QWidget):
 
     def _show_about(self):
         msg = QMessageBox(self)
-        msg.setWindowTitle("About Transcript")
-        msg.setText(f"Transcript v{VERSION}")
+        msg.setWindowTitle("About Transcripty")
+        msg.setText(f"Transcripty v{VERSION}")
         msg.setInformativeText("Local speech transcription.\n\nrenato0x")
         msg.exec()
 
@@ -271,7 +271,7 @@ class FloatingWindow(QWidget):
         self._update_url = url
         msg = QMessageBox(self)
         msg.setWindowTitle("Update Available")
-        msg.setText(f"Transcript v{latest_ver}")
+        msg.setText(f"Transcripty v{latest_ver}")
         msg.setInformativeText("Download now?")
         msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if msg.exec() == QMessageBox.StandardButton.Yes:

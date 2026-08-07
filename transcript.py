@@ -112,11 +112,11 @@ def _handle_exception(exc_type, exc_value, exc_tb):
     tb_text = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
     msg = QMessageBox()
     msg.setIcon(QMessageBox.Icon.Critical)
-    msg.setWindowTitle("Transcript")
+    msg.setWindowTitle("Transcripty")
     msg.setText("Unexpected error.")
     msg.setInformativeText(
         "Details saved to:\n"
-        f"{os.path.join(os.environ.get('APPDATA', ''), 'Transcript', 'logs', 'app.log')}"
+        f"{os.path.join(os.environ.get('APPDATA', ''), 'Transcripty', 'logs', 'app.log')}"
     )
     msg.setDetailedText(tb_text)
     msg.exec()
@@ -125,9 +125,9 @@ def _handle_exception(exc_type, exc_value, exc_tb):
 def main():
     global logger
     logger = setup_logger()
-    logger.info("Transcript %s started", VERSION)
+    logger.info("Transcripty %s started", VERSION)
 
-    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\Transcript")
+    mutex = ctypes.windll.kernel32.CreateMutexW(None, False, "Local\\Transcripty")
     if ctypes.windll.kernel32.GetLastError() == 183:
         ctypes.windll.kernel32.CloseHandle(mutex)
         return
@@ -135,7 +135,7 @@ def main():
     sys.excepthook = _handle_exception
 
     app = QApplication(sys.argv)
-    app.setApplicationName("Transcript")
+    app.setApplicationName("Transcripty")
     app.setApplicationVersion(VERSION)
     app.setOrganizationName("renato0x")
 

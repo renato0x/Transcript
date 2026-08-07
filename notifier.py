@@ -29,7 +29,7 @@ def _toast_fallback(title, message):
                 $textNodes.Item(0).AppendChild($template.CreateTextNode("{title}")) > $null
                 $textNodes.Item(1).AppendChild($template.CreateTextNode("{message}")) > $null
                 $toast = [Windows.UI.Notifications.ToastNotification]::new($template)
-                [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Transcript").Show($toast)
+                [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("Transcripty").Show($toast)
                 """,
             ],
             capture_output=True,
